@@ -1,7 +1,9 @@
-
 # Nightscout Alert
 
 This Node.JS application will query your Nightscout `deviceStatus` endpoint every 60 seconds. If your device hasn't checked in within the last 5 minutes this application will initiate a Twillio Studio Flow to notify additional parties there is a problem. 
+
+![Nightscout Alert](https://github.com/hwhitfield2/NightscoutAlert/blob/main/assets/)
+
 ## Deployment
 
 You have a few options on how you deploy this project. I personally use Heroku because it is inexpensive and extremely easy to maintain.
@@ -20,7 +22,6 @@ You have a few options on how you deploy this project. I personally use Heroku b
         E. FROM_PHONE_NUMBER - The phone number assigned to your Twilio flow.
         F. TO_PHONE_NUMBERS - A list of comma separated phone numbers you want alerted. ['XXXXXXXXXX, XXXXXXXXXX']
 
-
 ## Twilio Setup
 
     1. Open Twilio Studio here: https://console.twilio.com/us1/develop/studio/flows?frameUrl=%2Fconsole%2Fstudio%2Fflows%3Fx-target-region%3Dus1
@@ -28,7 +29,7 @@ You have a few options on how you deploy this project. I personally use Heroku b
     3. Under Templates, select Import from JSON.
     4. Copy the contents of https://github.com/hwhitfield2/NightscoutAlert/blob/main/twillio_import.json
     5. Paste the contents in and click Next
+
 ## Support
 
 For support, please join this Discord: https://discord.gg/WhD5gD5G
-
