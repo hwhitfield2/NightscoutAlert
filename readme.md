@@ -2,7 +2,7 @@
 
 This Node.JS application will query your Nightscout `deviceStatus` endpoint every 60 seconds. If your device hasn't checked in within the last 5 minutes this application will initiate a Twillio Studio Flow to notify additional parties there is a problem. 
 
-![Nightscout Alert](https://github.com/hwhitfield2/NightscoutAlert/blob/main/assets/)
+![Nightscout Alert](https://github.com/hwhitfield2/NightscoutAlert/blob/main/assets/nightscout-alert.png)
 
 ## Deployment
 
