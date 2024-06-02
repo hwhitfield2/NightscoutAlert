@@ -66,6 +66,7 @@ const checkEvents = async () => {
   
       console.log(`[${getPhoenixTimestamp()}] Query params:`, queryParams);
       console.log(`[${getPhoenixTimestamp()}] Headers:`, headers);
+      console.log(`[${getPhoenixTimestamp()}] API endpoint:`, API_ENDPOINT;);
   
       const response = await axios.get(API_ENDPOINT, { params: queryParams });
   
