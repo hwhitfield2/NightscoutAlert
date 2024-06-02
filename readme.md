@@ -19,6 +19,15 @@ You have a few options on how you deploy this project. I personally use Heroku b
         D. FLOW_SID - Twilio Flow SID (Can be found under the flow settings, open the Flow Configuration, copy the REST API Url /Flows/xxxxxxxxxxxxxx/Executions)
         E. FROM_PHONE_NUMBER - The phone number assigned to your Twilio flow.
         F. TO_PHONE_NUMBERS - A list of comma separated phone numbers you want alerted. ['XXXXXXXXXX, XXXXXXXXXX']
+
+
+## Twilio Setup
+
+    1. Open Twilio Studio here: https://console.twilio.com/us1/develop/studio/flows?frameUrl=%2Fconsole%2Fstudio%2Fflows%3Fx-target-region%3Dus1
+    2. Create a new Flow, you can name it whatever you'd like.
+    3. Under Templates, select Import from JSON.
+    4. Copy the contents of https://github.com/hwhitfield2/NightscoutAlert/blob/main/twillio_import.json
+    5. Paste the contents in and click Next
 ## Support
 
 For support, please join this Discord: https://discord.gg/WhD5gD5G
