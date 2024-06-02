@@ -1,0 +1,778 @@
+{
+    "description": "NightScout Alert",
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "event": "incomingCall"
+          },
+          {
+            "event": "incomingConversationMessage"
+          },
+          {
+            "next": "Send_Initial_Alert",
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      },
+      {
+        "name": "Send_Initial_Alert",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "next": "MessageDecision",
+            "event": "incomingMessage"
+          },
+          {
+            "next": "Send_Second_Alert",
+            "event": "timeout"
+          },
+          {
+            "next": "Send_Second_Alert",
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 440,
+            "y": 210
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "body": "There is a critical failure with the Nightscout Pancreas System.\n\nTo stop this process, reply with confirm.",
+          "timeout": "120"
+        }
+      },
+      {
+        "name": "Send_Second_Alert",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "next": "MessageDecision2",
+            "event": "incomingMessage"
+          },
+          {
+            "next": "Send_Third_Alert",
+            "event": "timeout"
+          },
+          {
+            "next": "Send_Third_Alert",
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 970,
+            "y": 480
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "body": "There is a critical failure with the Nightscout Pancreas System.\n\nTo stop this process, reply with confirm.",
+          "timeout": "120"
+        }
+      },
+      {
+        "name": "Send_Third_Alert",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "next": "MessageDecision3",
+            "event": "incomingMessage"
+          },
+          {
+            "next": "InitialCall",
+            "event": "timeout"
+          },
+          {
+            "next": "InitialCall",
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 870,
+            "y": 770
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "body": "There is a critical failure with the Nightscout Pancreas System.\n\nTo stop this process, reply with confirm.",
+          "timeout": "120"
+        }
+      },
+      {
+        "name": "MessageDecision",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "NoMatch1",
+            "event": "noMatch"
+          },
+          {
+            "next": "SendConfirmation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to confirm",
+                "arguments": [
+                  "{{widgets.Send_Initial_Alert.inbound.Body}}"
+                ],
+                "type": "equal_to",
+                "value": "confirm"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Send_Initial_Alert.inbound.Body}}",
+          "offset": {
+            "x": -420,
+            "y": 770
+          }
+        }
+      },
+      {
+        "name": "InitialCall",
+        "type": "make-outgoing-call-v2",
+        "transitions": [
+          {
+            "next": "gather_1",
+            "event": "answered"
+          },
+          {
+            "next": "SecondCall",
+            "event": "busy"
+          },
+          {
+            "next": "SecondCall",
+            "event": "noAnswer"
+          },
+          {
+            "next": "SecondCall",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "machine_detection_speech_threshold": "2400",
+          "detect_answering_machine": false,
+          "send_digits": "",
+          "sip_auth_username": "",
+          "offset": {
+            "x": -200,
+            "y": 1010
+          },
+          "recording_status_callback": "",
+          "sip_auth_password": "",
+          "recording_channels": "mono",
+          "timeout": 60,
+          "machine_detection": "Enable",
+          "trim": "do-not-trim",
+          "record": true,
+          "machine_detection_speech_end_threshold": "1200",
+          "machine_detection_timeout": "30",
+          "from": "{{flow.channel.address}}",
+          "to": "{{contact.channel.address}}",
+          "machine_detection_silence_timeout": "5000"
+        }
+      },
+      {
+        "name": "SecondCall",
+        "type": "make-outgoing-call-v2",
+        "transitions": [
+          {
+            "next": "Gather2",
+            "event": "answered"
+          },
+          {
+            "next": "ThirdCall",
+            "event": "busy"
+          },
+          {
+            "next": "ThirdCall",
+            "event": "noAnswer"
+          },
+          {
+            "next": "ThirdCall",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "machine_detection_speech_threshold": "2400",
+          "detect_answering_machine": false,
+          "send_digits": "",
+          "sip_auth_username": "",
+          "offset": {
+            "x": 640,
+            "y": 1380
+          },
+          "recording_status_callback": "",
+          "sip_auth_password": "",
+          "recording_channels": "mono",
+          "timeout": 60,
+          "machine_detection": "Enable",
+          "trim": "do-not-trim",
+          "record": true,
+          "machine_detection_speech_end_threshold": "1200",
+          "machine_detection_timeout": "30",
+          "from": "{{flow.channel.address}}",
+          "to": "{{contact.channel.address}}",
+          "machine_detection_silence_timeout": "5000"
+        }
+      },
+      {
+        "name": "gather_1",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "split_gather1",
+            "event": "keypress"
+          },
+          {
+            "event": "speech"
+          },
+          {
+            "next": "WaitModule",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "voice": "Google.en-US-Neural2-C",
+          "number_of_digits": 1,
+          "speech_timeout": "auto",
+          "offset": {
+            "x": -190,
+            "y": 1300
+          },
+          "loop": 1,
+          "finish_on_key": "#",
+          "say": "There is a critical failure with the Nightscout Pancreas System. To stop further escalation, please press five.",
+          "language": "en-US",
+          "stop_gather": true,
+          "gather_language": "en",
+          "profanity_filter": "true",
+          "timeout": 10
+        }
+      },
+      {
+        "name": "split_gather1",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "gather_1",
+            "event": "noMatch"
+          },
+          {
+            "next": "gather_1",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value not_equal_to 5",
+                "arguments": [
+                  "{{widgets.gather_1.Digits}}"
+                ],
+                "type": "not_equal_to",
+                "value": "5"
+              }
+            ]
+          },
+          {
+            "next": "ConfirmationMessage",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 5",
+                "arguments": [
+                  "{{widgets.gather_1.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "5"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.gather_1.Digits}}",
+          "offset": {
+            "x": -640,
+            "y": 1700
+          }
+        }
+      },
+      {
+        "name": "ConfirmationMessage",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "NotifyCompletedHayden",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Google.en-US-Neural2-C",
+          "offset": {
+            "x": -390,
+            "y": 2140
+          },
+          "loop": 1,
+          "say": "Thank you for confirming.",
+          "language": "en-US"
+        }
+      },
+      {
+        "name": "Gather2",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "split_gather2",
+            "event": "keypress"
+          },
+          {
+            "event": "speech"
+          },
+          {
+            "next": "WaitModule2",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "voice": "Google.en-US-Neural2-C",
+          "number_of_digits": 1,
+          "speech_timeout": "auto",
+          "offset": {
+            "x": 840,
+            "y": 1590
+          },
+          "loop": 1,
+          "finish_on_key": "#",
+          "say": "There is a critical failure with the Nightscout Pancreas System. To stop further escalation, please press five.",
+          "language": "en-US",
+          "stop_gather": true,
+          "gather_language": "en",
+          "profanity_filter": "true",
+          "timeout": 10
+        }
+      },
+      {
+        "name": "ThirdCall",
+        "type": "make-outgoing-call-v2",
+        "transitions": [
+          {
+            "next": "Gather3",
+            "event": "answered"
+          },
+          {
+            "event": "busy"
+          },
+          {
+            "event": "noAnswer"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "machine_detection_speech_threshold": "2400",
+          "detect_answering_machine": false,
+          "send_digits": "",
+          "sip_auth_username": "",
+          "offset": {
+            "x": 1010,
+            "y": 2110
+          },
+          "recording_status_callback": "",
+          "sip_auth_password": "",
+          "recording_channels": "mono",
+          "timeout": 60,
+          "machine_detection": "Enable",
+          "trim": "do-not-trim",
+          "record": true,
+          "machine_detection_speech_end_threshold": "1200",
+          "machine_detection_timeout": "30",
+          "from": "{{flow.channel.address}}",
+          "to": "{{contact.channel.address}}",
+          "machine_detection_silence_timeout": "5000"
+        }
+      },
+      {
+        "name": "Gather3",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "split_gather3",
+            "event": "keypress"
+          },
+          {
+            "event": "speech"
+          },
+          {
+            "next": "Gather3",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "voice": "Google.en-US-Neural2-C",
+          "speech_timeout": "auto",
+          "offset": {
+            "x": 1140,
+            "y": 2350
+          },
+          "loop": 1,
+          "finish_on_key": "#",
+          "say": "There is a critical failure with the Nightscout Pancreas System. To stop further escalation, please press five.",
+          "language": "en-US",
+          "stop_gather": true,
+          "gather_language": "en",
+          "profanity_filter": "true",
+          "timeout": 5
+        }
+      },
+      {
+        "name": "SendConfirmation",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "NotifyCompletedHayden",
+            "event": "sent"
+          },
+          {
+            "next": "NotifyCompletedHayden",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1140,
+            "y": 1120
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "Thank you for confirming."
+        }
+      },
+      {
+        "name": "WaitModule",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "next": "SecondCall",
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 210,
+            "y": 1370
+          },
+          "method": "GET",
+          "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+          "add_twilio_auth": false,
+          "url": "https://pancreas-lifealert-2594.twil.io/wait"
+        }
+      },
+      {
+        "name": "WaitModule2",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "next": "ThirdCall",
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1200,
+            "y": 1820
+          },
+          "method": "GET",
+          "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+          "add_twilio_auth": false,
+          "url": "https://pancreas-lifealert-2594.twil.io/wait"
+        }
+      },
+      {
+        "name": "split_gather2",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "next": "Gather2",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value not_equal_to 5",
+                "arguments": [
+                  "{{widgets.gather_2.Digits}}"
+                ],
+                "type": "not_equal_to",
+                "value": "5"
+              }
+            ]
+          },
+          {
+            "next": "ConfirmationMessage",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 5",
+                "arguments": [
+                  "{{widgets.gather_2.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "5"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.gather_2.Digits}}",
+          "offset": {
+            "x": -1150,
+            "y": 1700
+          }
+        }
+      },
+      {
+        "name": "split_gather3",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Gather3",
+            "event": "noMatch"
+          },
+          {
+            "next": "Gather3",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value not_equal_to 5",
+                "arguments": [
+                  "{{widgets.gather_3.Digits}}"
+                ],
+                "type": "not_equal_to",
+                "value": "5"
+              }
+            ]
+          },
+          {
+            "next": "ConfirmationMessage",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 5",
+                "arguments": [
+                  "{{widgets.gather_3.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "5"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.gather_3.Digits}}",
+          "offset": {
+            "x": -1640,
+            "y": 1700
+          }
+        }
+      },
+      {
+        "name": "MessageDecision2",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "NoMatch2",
+            "event": "noMatch"
+          },
+          {
+            "next": "SendConfirmation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to confirm",
+                "arguments": [
+                  "{{trigger.message.Body}}"
+                ],
+                "type": "equal_to",
+                "value": "confirm"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.message.Body}}",
+          "offset": {
+            "x": 20,
+            "y": 770
+          }
+        }
+      },
+      {
+        "name": "MessageDecision3",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "NoMatch3",
+            "event": "noMatch"
+          },
+          {
+            "next": "SendConfirmation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to confirm",
+                "arguments": [
+                  "{{trigger.message.Body}}"
+                ],
+                "type": "equal_to",
+                "value": "confirm"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.message.Body}}",
+          "offset": {
+            "x": 440,
+            "y": 770
+          }
+        }
+      },
+      {
+        "name": "NoMatch1",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Send_Second_Alert",
+            "event": "sent"
+          },
+          {
+            "next": "Send_Second_Alert",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1400,
+            "y": 770
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "Your response is invalid. We will escalate to the next step."
+        }
+      },
+      {
+        "name": "NoMatch2",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Send_Third_Alert",
+            "event": "sent"
+          },
+          {
+            "next": "Send_Third_Alert",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1060,
+            "y": 770
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "Your response is invalid. We will escalate to the next step."
+        }
+      },
+      {
+        "name": "NoMatch3",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "InitialCall",
+            "event": "sent"
+          },
+          {
+            "next": "InitialCall",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -740,
+            "y": 770
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "Your response is invalid. We will escalate to the next step."
+        }
+      },
+      {
+        "name": "NotifyCompletedHayden",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1970,
+            "y": 1340
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{flow.variables.hayden_cell}}",
+          "body": "{{flow.variables.activeUser}} has confirmed everything is okay."
+        }
+      }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+  }
