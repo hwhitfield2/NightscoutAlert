@@ -20,7 +20,7 @@ const API_ENDPOINT = process.env.API_ENDPOINT;
 const API_KEY = process.env.API_KEY;
 const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yml'));
 
-let lastEventCheckTime = null;
+let lastEventCheckTime = '2011-04-20T09:30:51.01';
 const COOLDOWN_PERIOD = 30 * 60 * 1000;
 
 const getPhoenixTimestamp = () => {
